@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>copperWhispers — open hardware, monthly</title>
+<meta name="description" content="A new open-source audio board every month. KiCad source, gerbers, a one-click BOM cart, and the bench measurements behind it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --substrate:#0B0A12;
+    --substrate-2:#131120;
+    --copper:#B87333;
+    --copper-dim:#6E4520;
+    --signal:#00ABE7;
+    --flag:#FF8811;
+    --ink:#F2F4F3;
+    --ink-dim:#8A8799;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--substrate);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:660px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+  /* copper trace field */
+  .traces{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5}
+  .traces path{fill:none;stroke:var(--copper-dim);stroke-width:1.5}
+  .traces circle{fill:var(--substrate);stroke:var(--copper-dim);stroke-width:1.5}
+  .traces .live{stroke:var(--copper);stroke-width:2;
+    stroke-dasharray:5 7;animation:flow 9s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-120}}
+
+  header{padding:64px 0 0}
+  .mark{
+    font-family:var(--mono);font-size:13px;font-weight:600;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--copper);
+  }
+  h1{
+    font-family:var(--mono);font-weight:600;
+    font-size:clamp(30px,6.2vw,46px);line-height:1.12;
+    letter-spacing:-.02em;margin:26px 0 20px;
+  }
+  h1 em{font-style:normal;color:var(--signal)}
+  .lede{font-size:19px;color:var(--ink-dim);margin:0 0 6px;max-width:52ch}
+  .lede strong{color:var(--ink);font-weight:500}
+
+  /* form */
+  .signup{margin:44px 0 0;padding:28px;border:1px solid #262238;
+    background:var(--substrate-2);border-radius:3px}
+  label{display:block;font-family:var(--mono);font-size:12px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:9px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  input[type=email]{
+    flex:1 1 240px;min-width:0;padding:14px 15px;
+    font-family:var(--mono);font-size:15px;color:var(--ink);
+    background:var(--substrate);border:1px solid #322D48;border-radius:2px;
+  }
+  input[type=email]::placeholder{color:#4E4A63}
+  input[type=email]:focus,button:focus-visible,input[type=checkbox]:focus-visible{
+    outline:2px solid var(--signal);outline-offset:2px}
+  button{
+    padding:14px 24px;font-family:var(--mono);font-size:14px;font-weight:600;
+    letter-spacing:.05em;color:var(--substrate);background:var(--copper);
+    border:0;border-radius:2px;cursor:pointer;transition:background .15s}
+  button:hover{background:var(--flag)}
+  .opt{display:flex;gap:11px;align-items:flex-start;margin-top:18px;
+    font-size:15px;color:var(--ink-dim)}
+  .opt input{margin-top:4px;accent-color:var(--signal);width:16px;height:16px;flex:0 0 auto}
+  .fine{font-family:var(--mono);font-size:12px;color:#5C5872;margin-top:18px}
+
+  /* current board */
+  .now{margin:56px 0 0;padding-top:34px;border-top:1px solid #262238}
+  .now h2{font-family:var(--mono);font-size:12px;font-weight:500;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 18px}
+  .board{font-family:var(--mono);font-size:20px;font-weight:600;
+    color:var(--ink);margin:0 0 10px}
+  .board span{color:var(--copper)}
+  .spec{font-family:var(--mono);font-size:14px;color:var(--ink-dim);
+    margin:0 0 20px;line-height:1.9}
+  .spec b{color:var(--signal);font-weight:500}
+  .links{display:flex;gap:22px;flex-wrap:wrap;font-family:var(--mono);font-size:14px}
+  .links a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--copper-dim);
+    padding-bottom:2px;transition:border-color .15s}
+  .links a:hover{border-color:var(--copper)}
+
+  footer{margin:64px 0 56px;font-family:var(--mono);font-size:12px;color:#4E4A63}
+  footer a{color:#6E6A85}
+
+  @media (prefers-reduced-motion:reduce){
+    .traces .live{animation:none;stroke-dasharray:none}
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<svg class="traces" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 1200 900">
+  <path d="M0 120 H180 L220 160 V420 L260 460 H520"/>
+  <path d="M1200 200 H1000 L960 240 V520 L920 560 H700"/>
+  <path class="live" d="M60 0 V300 L120 360 V700 L200 780 H600"/>
+  <path d="M1140 900 V640 L1080 580 V300 L1020 240 V60"/>
+  <path d="M0 820 H300 L360 760 H640"/>
+  <circle cx="220" cy="160" r="4.5"/>
+  <circle cx="260" cy="460" r="4.5"/>
+  <circle cx="960" cy="240" r="4.5"/>
+  <circle cx="920" cy="560" r="4.5"/>
+  <circle cx="120" cy="360" r="4.5"/>
+  <circle cx="200" cy="780" r="4.5"/>
+  <circle cx="1080" cy="580" r="4.5"/>
+  <circle cx="360" cy="760" r="4.5"/>
+</svg>
+
+<div class="wrap">
+
+  <header>
+    <div class="mark">copperWhispers</div>
+    <h1>A new open-source board<br>every <em>month</em>.</h1>
+    <p class="lede">KiCad source, fab-ready gerbers, a BOM that fills your cart in one click, and <strong>the bench measurements behind it</strong> — including the parts that didn't work first time.</p>
+    <p class="lede">Free, always. Kits when there's demand for them.</p>
+  </header>
+
+  <form class="signup" action="https://buttondown.com/api/emails/embed-subscribe/kylian" method="post">
+    <label for="email">Get the files</label>
+    <div class="row">
+      <input id="email" type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+      <button type="submit">Send them</button>
+    </div>
+    <div class="opt">
+      <input id="kit" type="checkbox" name="metadata__kit_interest" value="yes">
+      <label for="kit" style="text-transform:none;letter-spacing:0;font-family:var(--body);font-size:15px;color:var(--ink-dim);margin:0">
+        I'd buy a kit rather than source the parts myself
+      </label>
+    </div>
+    <p class="fine">One email per board. Unsubscribe in a click.</p>
+  </form>
+
+  <section class="now">
+    <h2>On the bench now</h2>
+    <p class="board">STEREO_AMP_MODULE_<span>V0B</span></p>
+    <p class="spec">
+      TPA3116D2 class-D stereo · 26 dB · BTL<br>
+      12 V rail · driving <b>20 W</b> 4 Ω speakers<br>
+      2-layer · 63 footprints · <b>18 test pads</b>
+    </p>
+    <p class="lede" style="font-size:16px">A tiny amplifier built to be measured, not just used. Test points on the switching node, the filter output and the supply rail.</p>
+    <div class="links">
+      <a href="https://github.com/copperWhispers/stereo-amp-module">Files on GitHub</a>
+      <a href="https://youtube.com/@Kylian_Delaplassette">Watch the build</a>
+    </div>
+  </section>
+
+  <footer>
+    Cheltenham, UK · <a href="https://doctronics.uk">doctronics.uk</a>
+  </footer>
+
+</div>
+</body>
+</html>
